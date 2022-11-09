@@ -21,6 +21,14 @@ public class MemberRepository {
     private static final String TABLE = "Member";
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
+    private final RowMapper<Member> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> Member
+            .builder()
+            .id(resultSet.getLong("id"))
+            .email(resultSet.getString("email"))
+            .nickname(resultSet.getString("nickname"))
+            .birthday(resultSet.getObject("birthday", LocalDate.class))
+            .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
+            .build();
 
     public MemberRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
@@ -29,10 +37,6 @@ public class MemberRepository {
                 .usingGeneratedKeyColumns("id");
     }
 
-    /*
-    * member id를 보고 갱신 또는 삽입을 정한다.
-    * 반환값은 id를 담아서 반환한다.
-    * */
     public Member save(Member member){
         if (member.getId() == null)
             return insert(member);
@@ -52,30 +56,18 @@ public class MemberRepository {
     }
 
     private Member update(Member member){
-        // TODO: implemented
+        var sql = String.format("UPDATE %s set email = :email, nickname = :nickname, birthday = :birthday where id = :id", TABLE);
+        var params = new BeanPropertySqlParameterSource(member);
+        namedParameterJdbcTemplate.update(sql, params);
         return member;
     }
 
-    /*
-    * select *
-    * from Member
-    * where id = :id
-    * */
     public Optional<Member> findById(Long id){
         var sql = String.format("SELECT * FROM %s WHERE id = :id", TABLE);
         var params = new MapSqlParameterSource()
                 .addValue("id", id);
 
-        RowMapper<Member> rowMapper = (ResultSet resultSet, int rowNum) -> Member
-                .builder()
-                .id(resultSet.getLong("id"))
-                .email(resultSet.getString("email"))
-                .nickname(resultSet.getString("nickname"))
-                .birthday(resultSet.getObject("birthday", LocalDate.class))
-                .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
-                .build();
-
-        List<Member> members = namedParameterJdbcTemplate.query(sql, params, rowMapper);
+        List<Member> members = namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
 
         // jdbcTemplate.query의 결과 사이즈가 0이면 null, 2 이상이면 예외
         Member nullableMember = DataAccessUtils.singleResult(members);

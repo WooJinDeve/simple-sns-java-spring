@@ -1,6 +1,7 @@
 package com.sns.sns.common;
 
 import com.sns.sns.domain.member.dto.RegisterMemberCommand;
+import com.sns.sns.domain.member.entity.Member;
 
 import java.time.LocalDate;
 
@@ -12,5 +13,13 @@ public class MemberFixtures {
 
     public static RegisterMemberCommand createMemberCommand(){
         return new RegisterMemberCommand(이메일, 닉네임, 생일);
+    }
+
+    public static Member createMember(){
+        return Member.builder()
+                .email(이메일)
+                .nickname(닉네임)
+                .birthday(생일)
+                .build();
     }
 }

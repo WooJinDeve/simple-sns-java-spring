@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
-import static com.sns.sns.common.MemberFixtures.createMember;
+import static com.sns.sns.common.MemberFixtures.createBuilderMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -27,7 +27,7 @@ class MemberReadServiceTest {
     @DisplayName("회원을 단건 조회한다.")
     void 회원을_단건조회한다(){
         //given
-        Long id = memberRepository.save(createMember()).getId();
+        Long id = memberRepository.save(createBuilderMember()).getId();
 
         //when
         MemberDto actual = memberReadService.getMember(id);

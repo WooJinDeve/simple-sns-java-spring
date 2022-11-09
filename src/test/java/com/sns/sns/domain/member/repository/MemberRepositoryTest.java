@@ -41,7 +41,7 @@ class MemberRepositoryTest extends RepositoryTest {
     @DisplayName("회원을 조회한다")
     void 회원을_조회한다() {
         //given
-        Member member = memberRepository.save(createMember());
+        Member member = memberRepository.save(createBuilderMember());
 
         //when
         Member actual = memberRepository.findById(member.getId()).get();
@@ -52,7 +52,7 @@ class MemberRepositoryTest extends RepositoryTest {
 
     @Test
     @DisplayName("존재하지 않는 회원을 조회한다")
-    void 존재하지않는_회원을_조회한다(){
+    void 존재하지않는_회원을_조회한다() {
         //given & when
         Optional<Member> actual = memberRepository.findById(0L);
 

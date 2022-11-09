@@ -1,6 +1,9 @@
 package com.sns.sns.domain.member.service;
 
 import com.sns.sns.domain.member.dto.MemberDto;
+import com.sns.sns.domain.member.dto.MemberNicknameHistoryDto;
+import com.sns.sns.domain.member.entity.Member;
+import com.sns.sns.domain.member.repository.MemberNicknameHistoryRepository;
 import com.sns.sns.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.NoSuchElementException;
 
 import static com.sns.sns.common.MemberFixtures.createBuilderMember;
+import static com.sns.sns.common.MemberNickNameHistoryFixtures.createBuilderMemberNicknameHistory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 @Transactional
@@ -22,6 +27,9 @@ class MemberReadServiceTest {
     private MemberReadService memberReadService;
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private MemberNicknameHistoryRepository memberNicknameHistoryRepository;
 
     @Test
     @DisplayName("회원을 단건 조회한다.")
@@ -42,5 +50,22 @@ class MemberReadServiceTest {
         //given & when & then
         assertThatThrownBy(() -> memberReadService.getMember(0L))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("회원 아이디를 통해 닉네임 변경 내역을 조회한다.")
+    void 회원_아이디를_통해_닉네임_변경_내역을_조회한다(){
+        //given
+        Member member = memberRepository.save(createBuilderMember());
+        memberNicknameHistoryRepository.save(createBuilderMemberNicknameHistory(member));
+
+        //when
+        MemberNicknameHistoryDto actual = memberReadService.getNicknameHistories(member.getId()).get(0);
+
+        //then
+        assertAll(() ->{
+            assertThat(actual.memberId()).isEqualTo(member.getId());
+            assertThat(actual.nickname()).isEqualTo(member.getNickname());
+        });
     }
 }

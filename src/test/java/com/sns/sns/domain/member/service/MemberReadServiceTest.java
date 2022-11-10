@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.sns.sns.common.MemberFixtures.createBuilderMember;
@@ -67,5 +68,19 @@ class MemberReadServiceTest {
             assertThat(actual.memberId()).isEqualTo(member.getId());
             assertThat(actual.nickname()).isEqualTo(member.getNickname());
         });
+    }
+
+    @Test
+    @DisplayName("회원아이디 리스트를 통해 회원을 전체조회 한다.")
+    void 회원아이디_리스트를_통해_회원을_전체조회한다(){
+        //given
+        Member member = memberRepository.save(createBuilderMember());
+        memberNicknameHistoryRepository.save(createBuilderMemberNicknameHistory(member));
+
+        //when
+        List<MemberDto> actual = memberReadService.getMembers(List.of(member.getId()));
+
+        //then
+        assertThat(actual.size()).isEqualTo(1);
     }
 }

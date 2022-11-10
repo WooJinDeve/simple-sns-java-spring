@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.7.5'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id 'java'
+	id 'jacoco'
 }
 
 group = 'com.sns'
@@ -10,6 +11,10 @@ sourceCompatibility = '17'
 
 repositories {
 	mavenCentral()
+}
+
+jacoco {
+	toolVersion = "0.8.7"
 }
 
 dependencies {
@@ -33,4 +38,17 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled false
+		csv.enabled false
+		html.enabled true
+	}
+}
+
+jar {
+	enabled = false
 }

@@ -7,6 +7,7 @@ import com.sns.sns.domain.member.repository.MemberNicknameHistoryRepository;
 import com.sns.sns.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,8 @@ public class MemberWriteService {
     private final MemberRepository memberRepository;
     private final MemberNicknameHistoryRepository memberNicknameHistoryRepository;
 
+
+    @Transactional
     public Member create(RegisterMemberCommand command) {
         Member member = Member.builder()
                 .nickname(command.nickname())

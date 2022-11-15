@@ -133,6 +133,26 @@ public class PostRepository {
         return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
     }
 
+    public List<Post> findAllByInMemberIdAndOrderByIdDesc(List<Long> memberIds, int size){
+        if (memberIds.isEmpty()){
+            return List.of();
+        }
+
+        var params = new MapSqlParameterSource()
+                .addValue("memberIds",memberIds)
+                .addValue("size", size);
+
+        var sql = String.format("""
+                SELECT *
+                FROM %s
+                WHERE memberId in (:memberIds)
+                ORDER BY id DESC
+                LIMIT :size
+                """, TABLE);
+
+        return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
+    }
+
     public List<Post> findAllByLessThanIdMemberIdAndOrderByIdDesc(Long id, Long memberId, int size){
         var params = new MapSqlParameterSource()
                 .addValue("memberId",memberId)
@@ -145,6 +165,43 @@ public class PostRepository {
                 WHERE memberId = :memberId and id < :id
                 ORDER BY id DESC
                 LIMIT :size
+                """, TABLE);
+
+        return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
+    }
+
+    public List<Post> findAllByLessThanIdAndInMemberIdAndOrderByIdDesc(Long id, List<Long> memberIds, int size){
+        if (memberIds.isEmpty()){
+            return List.of();
+        }
+
+        var params = new MapSqlParameterSource()
+                .addValue("memberIds",memberIds)
+                .addValue("id", id)
+                .addValue("size", size);
+
+        var sql = String.format("""
+                SELECT *
+                FROM %s
+                WHERE memberId in (:memberIds) and id < :id
+                ORDER BY id DESC
+                LIMIT :size
+                """, TABLE);
+
+        return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
+    }
+
+    public List<Post> findAllByInId(List<Long> ids){
+        if(ids.isEmpty())
+            return List.of();
+
+        var params = new MapSqlParameterSource()
+                .addValue("ids", ids);
+
+        var sql = String.format("""
+                SELECT *
+                FROM %s
+                WHERE id in (:ids)
                 """, TABLE);
 
         return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);

@@ -1,5 +1,7 @@
 package com.sns.sns.application.controller;
 
+import com.sns.sns.application.usecase.CreatePostUsecase;
+import com.sns.sns.application.usecase.GetTimeLinePostsUsecase;
 import com.sns.sns.domain.post.dto.DailyPostCount;
 import com.sns.sns.domain.post.dto.DailyPostCountRequest;
 import com.sns.sns.domain.post.dto.PostCommand;
@@ -22,10 +24,13 @@ public class PostController {
 
     private final PostWriteService postWriteService;
     private final PostReadService postReadService;
+    private final GetTimeLinePostsUsecase getTimeLinePostsUsecase;
+    private final CreatePostUsecase createPostUsecase;
+
 
     @PostMapping
     public Long create(@RequestBody  PostCommand command) {
-        return postWriteService.create(command);
+        return createPostUsecase.execute(command);
     }
 
     @GetMapping("/daily-post-counts")
@@ -48,5 +53,14 @@ public class PostController {
     ){
 
         return postReadService.getPosts(memberId, cursorRequest);
+    }
+
+    @GetMapping("/members/{id}/timeline")
+    public PageCursor<Post> getTimeLine(
+            @PathVariable(name = "id") Long memberId,
+            CursorRequest cursorRequest
+    ){
+
+        return getTimeLinePostsUsecase.executeTimeline(memberId, cursorRequest);
     }
 }

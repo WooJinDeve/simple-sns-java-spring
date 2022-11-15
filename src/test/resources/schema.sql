@@ -50,5 +50,15 @@ create index POST__index_member_id
 create index POST__index_created_date
     on POST (createdDate);
 
+create table TimeLine
+(
+    id int auto_increment,
+    memberId int not null,
+    postId int not null,
+    createAt datetime not null,
+    constraint Timeline_it_nindex
+        primary key (id)
 
+
+);
 

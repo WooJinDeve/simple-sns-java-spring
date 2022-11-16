@@ -22,9 +22,9 @@ public class MemberWriteServiceTest {
     private MemberWriteService memberWriteService;
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
     private MemberNicknameHistoryRepository memberNicknameHistoryRepository;
+
 
     @Test
     @DisplayName("회원정보를 정상적으로 저장한다")

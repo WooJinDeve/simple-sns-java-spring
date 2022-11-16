@@ -9,8 +9,10 @@ import java.time.LocalDate;
 
 public class MemberFixtures {
 
-    public static final String 이메일 = "email@naver.com";
+    public static final String 이메일 = "email123@naver.com";
+    public static final String 추가_이메일 = "email321@naver.com";
     public static final String 닉네임 = "닉네임";
+    public static final String 추가_닉네임 = "추가_닉네임";
     public static final LocalDate 생일 = LocalDate.now();
 
     public static RegisterMemberCommand createMemberCommand() {
@@ -21,6 +23,14 @@ public class MemberFixtures {
         return Member.builder()
                 .email(이메일)
                 .nickname(닉네임)
+                .birthday(생일)
+                .build();
+    }
+
+    public static Member createBuilderMember(final String nickname, final String email) {
+        return Member.builder()
+                .email(email)
+                .nickname(nickname)
                 .birthday(생일)
                 .build();
     }

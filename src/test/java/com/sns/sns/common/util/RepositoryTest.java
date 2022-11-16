@@ -1,7 +1,7 @@
 package com.sns.sns.common.util;
 
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-@JdbcTest
+@DataJpaTest
 public class RepositoryTest {
 }

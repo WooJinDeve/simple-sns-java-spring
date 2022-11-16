@@ -23,7 +23,6 @@ class MemberNicknameHistoryRepositoryTest extends RepositoryTest {
     @Autowired
     public MemberNicknameHistoryRepositoryTest(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.memberNicknameHistoryRepository = new MemberNicknameHistoryRepository(namedParameterJdbcTemplate);
-        this.memberRepository = new MemberRepository(namedParameterJdbcTemplate);
     }
 
     @Test

@@ -5,7 +5,6 @@ import com.sns.sns.domain.member.entity.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,12 +13,9 @@ import static com.sns.sns.common.MemberFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberRepositoryTest extends RepositoryTest {
-    private MemberRepository memberRepository;
 
     @Autowired
-    public MemberRepositoryTest(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.memberRepository = new MemberRepository(namedParameterJdbcTemplate);
-    }
+    private MemberRepository memberRepository;
 
     @Test
     @DisplayName("회원을 저장한다.")
@@ -79,7 +75,7 @@ class MemberRepositoryTest extends RepositoryTest {
     void 회원_아이디가_저장된_리스트로_전체조회를_한다(){
         //given
         Long id1 = memberRepository.save(createBuilderMember()).getId();
-        Long id2 = memberRepository.save(createBuilderMember()).getId();
+        Long id2 = memberRepository.save(createBuilderMember(추가_닉네임,추가_이메일)).getId();
         List<Long> ids = List.of(id1, id2);
 
         //when

@@ -19,12 +19,12 @@ import java.util.List;
 public class PostCustomRepositoryImpl implements PostCustomRepository{
     private static final String TABLE = "Post";
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    public List<DailyPostCount> groupByCreatedDate(DailyPostCountRequest request){
+    @Override
+    public List<DailyPostCount> groupByCreatedDate(DailyPostCountRequest request) {
         var sql = String.format("""
                 SELECT member_id, created_date, count(id) as cnt 
                 FROM %s 
-                WHERE member_id = :member_id and created_date between :firstDate and :lastDate 
+                WHERE member_id = :memberId and created_date between :firstDate and :lastDate 
                 GROUP BY member_id, created_date
                 """, TABLE);
         var params = new BeanPropertySqlParameterSource(request);
@@ -37,8 +37,7 @@ public class PostCustomRepositoryImpl implements PostCustomRepository{
         return namedParameterJdbcTemplate.query(sql, params, mapper);
     }
 
-
-
+    @Override
     public void bulkInsert(List<Post> posts) {
         var sql = String.format("""
                 INSERT INTO `%s` (member_id, contents, created_date, created_at)

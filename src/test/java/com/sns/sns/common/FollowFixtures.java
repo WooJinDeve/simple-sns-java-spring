@@ -1,16 +1,17 @@
 package com.sns.sns.common;
 
 import com.sns.sns.domain.follow.entity.Follow;
+import com.sns.sns.domain.member.entity.Member;
 import org.jeasy.random.EasyRandom;
 import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.FieldPredicates;
 
 public class FollowFixtures {
 
-    public static Follow createFollow(Long toMember, Long fromMember){
+    public static Follow createFollow(Member toMember, Member fromMember){
         return Follow.builder()
-                .toMemberId(toMember)
-                .fromMemberId(fromMember)
+                .toMember(toMember)
+                .fromMember(fromMember)
                 .build();
     }
 

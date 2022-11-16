@@ -7,4 +7,9 @@ import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findAllByIdIn(List<Long> ids);
+
+    default Member getMember(Long memberId){
+        return findById(memberId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }

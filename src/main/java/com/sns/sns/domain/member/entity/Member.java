@@ -64,4 +64,9 @@ public class Member {
     private void validateNickname(final String nickname){
         Assert.isTrue(nickname.length() <= NAME_MAX_LENGTH, "최대 길이를 초과했습니다.");
     }
+
+    public Member validateId(){
+        Assert.isTrue(!(this.id == null), "멤버의 ID가 Null 입니다.");
+        return this;
+    }
 }

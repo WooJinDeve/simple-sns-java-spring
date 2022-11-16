@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -15,6 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Getter
 @Entity
+@Table(name = "MemberNicknameHistory")
 @NoArgsConstructor(access = PROTECTED)
 public class MemberNicknameHistory {
 

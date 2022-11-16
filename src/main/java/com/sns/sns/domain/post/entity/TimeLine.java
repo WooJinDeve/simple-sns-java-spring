@@ -1,29 +1,44 @@
 package com.sns.sns.domain.post.entity;
 
 
+import com.sns.sns.domain.member.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
+
+import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Getter
+@Entity
+@Table(name = "timeline")
+@NoArgsConstructor(access = PROTECTED)
 public class TimeLine {
 
-    private final Long id;
+    @Id @GeneratedValue(strategy = IDENTITY)
+    private Long id;
 
-    private final Long memberId;
 
-    private final Long postId;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    private final LocalDateTime createdAt;
+    @ManyToOne(fetch = EAGER)
+    @JoinColumn(name = "post_id")
+    private Post post;
 
+    private LocalDateTime createdAt;
 
     @Builder
-    public TimeLine(Long id, Long memberId, Long postId, LocalDateTime createdAt) {
+    public TimeLine(Long id, Member member, Post post, LocalDateTime createdAt) {
         this.id = id;
-        this.memberId = Objects.requireNonNull(memberId);
-        this.postId = Objects.requireNonNull(postId);
+        this.member = member.validateId();
+        this.post = post;
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 

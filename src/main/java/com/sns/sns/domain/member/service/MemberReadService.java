@@ -8,12 +8,14 @@ import com.sns.sns.domain.member.repository.MemberNicknameHistoryRepository;
 import com.sns.sns.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberReadService {
 
     private final MemberRepository memberRepository;

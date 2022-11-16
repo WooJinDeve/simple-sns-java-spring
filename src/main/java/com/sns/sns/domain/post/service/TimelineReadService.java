@@ -6,12 +6,15 @@ import com.sns.sns.domain.post.repository.TimeLineRepository;
 import com.sns.sns.util.CursorRequest;
 import com.sns.sns.util.PageCursor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TimelineReadService {
 
     private final TimeLineRepository timeLineRepository;
@@ -27,9 +30,9 @@ public class TimelineReadService {
 
     private List<TimeLine> findAllBy(Long memberId, CursorRequest cursorRequest) {
         if (cursorRequest.hasKey()) {
-            return timeLineRepository.findAllByLessThanIdMemberIdAndOrderByIdDesc(cursorRequest.key(), memberId, cursorRequest.size());
+            return timeLineRepository.findAllByIdLessThanAndMemberIdOrderByIdDesc(cursorRequest.key(), memberId, PageRequest.of(0,cursorRequest.size()));
         }
-        return timeLineRepository.findAllByMemberIdOrderByIdDesc(memberId, cursorRequest.size());
+        return timeLineRepository.findAllByMemberIdOrderByIdDesc(memberId, PageRequest.of(0, cursorRequest.size()));
     }
 
 

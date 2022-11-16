@@ -1,4 +1,4 @@
-package com.sns.sns.domain.follow;
+package com.sns.sns.domain.follow.entity;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

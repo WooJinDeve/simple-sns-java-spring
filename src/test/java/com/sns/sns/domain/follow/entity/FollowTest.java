@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.sns.sns.common.FollowFixtures.createFollow;
+import static com.sns.sns.common.MemberFixtures.createMember;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class FollowTest {
@@ -20,10 +21,7 @@ public class FollowTest {
     @DisplayName("팔로우 요청 아이디나 대상 아이디가 null일 경우 오류를 던진다")
     void 팔로우_요청_아이디나_대상_아이디가_null일_경우_오류를_던진다(){
         //given & when & then
-        Assertions.assertThatThrownBy(() -> createFollow(null, 1L))
-                .isInstanceOf(NullPointerException.class);
-
-        Assertions.assertThatThrownBy(() -> createFollow(1L, null))
-                .isInstanceOf(NullPointerException.class);
+        Assertions.assertThatThrownBy(() -> createFollow(null, createMember()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

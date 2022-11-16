@@ -2,20 +2,30 @@ package com.sns.sns.domain.member.entity;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import static javax.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
 @Getter
+@Entity
+@NoArgsConstructor(access = PROTECTED)
 public class MemberNicknameHistory {
 
-    private final Long id;
+    @Id @GeneratedValue(strategy = IDENTITY)
+    private Long id;
 
-    private final Long memberId;
+    private Long memberId;
 
-    private final String nickname;
+    private  String nickname;
 
-    private final LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @Builder
     public MemberNicknameHistory(Long id, Long memberId, String nickname, LocalDateTime createdAt) {

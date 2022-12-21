@@ -65,4 +65,9 @@ public class PostReadService {
         }
         return postRepository.findAllByInMemberIdAndOrderByIdDesc(memberIds, cursorRequest.size());
     }
+
+    public Post getPost(Long postId) {
+        return postRepository.findById(postId, false)
+                .orElseThrow();
+    }
 }

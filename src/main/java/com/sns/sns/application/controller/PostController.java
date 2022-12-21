@@ -1,5 +1,6 @@
 package com.sns.sns.application.controller;
 
+import com.sns.sns.application.usecase.CreatePostLikeUsecase;
 import com.sns.sns.application.usecase.CreatePostUsecase;
 import com.sns.sns.application.usecase.GetTimeLinePostsUsecase;
 import com.sns.sns.domain.post.dto.DailyPostCount;
@@ -26,6 +27,8 @@ public class PostController {
     private final PostReadService postReadService;
     private final GetTimeLinePostsUsecase getTimeLinePostsUsecase;
     private final CreatePostUsecase createPostUsecase;
+
+    private final CreatePostLikeUsecase createPostLikeUsecase;
 
 
     @PostMapping
@@ -65,9 +68,14 @@ public class PostController {
     }
 
 
-    @PostMapping("/{postId}/like")
+    @PostMapping("/{postId}/like/v1")
     public void likePost(Long postId){
 //        postWriteService.likePost(postId);
         postWriteService.likePostByOptimisticLock(postId);
+    }
+
+    @PostMapping("/{postId}/like/v2")
+    public void likePostV2(@PathVariable Long postId, @RequestParam Long memberId){
+        createPostLikeUsecase.execute(postId, memberId);
     }
 }

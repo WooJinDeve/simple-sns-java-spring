@@ -27,7 +27,7 @@ public class MemberRepository {
             .email(resultSet.getString("email"))
             .nickname(resultSet.getString("nickname"))
             .birthday(resultSet.getObject("birthday", LocalDate.class))
-            .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
+            .createdAt(resultSet.getObject("created_at", LocalDateTime.class))
             .build();
 
     public MemberRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {

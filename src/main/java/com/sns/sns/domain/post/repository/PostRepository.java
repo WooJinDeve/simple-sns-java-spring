@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class PostRepository {
@@ -29,10 +30,11 @@ public class PostRepository {
 
     private static final RowMapper<Post> ROW_MAPPER = (ResultSet resultSet, int rowNum) -> Post.builder()
             .id(resultSet.getLong("id"))
-            .memberId(resultSet.getLong("memberId"))
+            .memberId(resultSet.getLong("member_id"))
             .contents(resultSet.getString("contents"))
-            .createdDate(resultSet.getObject("createdDate", LocalDate.class))
-            .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
+            .createdDate(resultSet.getObject("created_date", LocalDate.class))
+            .createdAt(resultSet.getObject("created_at", LocalDateTime.class))
+            .likeCount(resultSet.getLong("likeCount"))
             .build();
 
 
@@ -47,7 +49,7 @@ public class PostRepository {
     public Post save(Post post) {
         if (post.getId() == null)
             return insert(post);
-        throw new UnsupportedOperationException("Post는 갱신을 지원하지 않습니다");
+        return update(post);
     }
 
     private Post insert(Post post) {
@@ -63,6 +65,13 @@ public class PostRepository {
                 .build();
     }
 
+    private Post update(Post post){
+        var sql = String.format("UPDATE %s set member_id = :memberId, contents = :contents, created_date = :createdDate, likeCount = :likeCount, created_at = :createdAt where id = :id", TABLE);
+        var params = new BeanPropertySqlParameterSource(post);
+        namedParameterJdbcTemplate.update(sql, params);
+        return post;
+    }
+
     public List<Post> findByMemberId(Long memberId) {
         var params = new MapSqlParameterSource()
                 .addValue("memberId", memberId);
@@ -70,18 +79,25 @@ public class PostRepository {
         return namedParameterJdbcTemplate.query(sql, params, ROW_MAPPER);
     }
 
+    public Optional<Post> findById(Long postId){
+        var sql = String.format("SELECT * FROM %s WHERE id = :postId", TABLE);
+        var params = new MapSqlParameterSource()
+                .addValue("postId", postId);
+        return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, params, ROW_MAPPER));
+    }
+
     public List<DailyPostCount> groupByCreatedDate(DailyPostCountRequest request){
         var sql = String.format("""
-                SELECT memberId, createdDate, count(id) as cnt 
+                SELECT member_id, created_date, count(id) as cnt 
                 FROM %s 
-                WHERE memberId = :memberId and createdDate between :firstDate and :lastDate 
-                GROUP BY memberId, createdDate
+                WHERE member_id = :memberId and created_date between :firstDate and :lastDate 
+                GROUP BY memberId, created_date
                 """, TABLE);
         var params = new BeanPropertySqlParameterSource(request);
 
         RowMapper<DailyPostCount> mapper = (ResultSet resultSet, int rowNum) -> new DailyPostCount(
-                resultSet.getLong("memberId"),
-                resultSet.getObject("createdDate", LocalDate.class),
+                resultSet.getLong("member_id"),
+                resultSet.getObject("created_date", LocalDate.class),
                 resultSet.getLong("cnt")
         );
         return namedParameterJdbcTemplate.query(sql, params, mapper);
@@ -96,7 +112,7 @@ public class PostRepository {
         var sql = String.format("""
                 SELECT *
                 FROM %s
-                WHERE memberId = :memberId
+                WHERE member_id = :memberId
                 ORDER BY %s
                 LIMIT :size
                 OFFSET :offset
@@ -113,7 +129,7 @@ public class PostRepository {
         var sql = String.format("""
                 SELECT count(id)
                 FROM %s
-                WHERE memberId = :memberId""", TABLE);
+                WHERE member_id = :memberId""", TABLE);
         return namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
     }
 
@@ -125,7 +141,7 @@ public class PostRepository {
         var sql = String.format("""
                 SELECT *
                 FROM %s
-                WHERE memberId = :memberId
+                WHERE member_id = :memberId
                 ORDER BY id DESC
                 LIMIT :size
                 """, TABLE);
@@ -145,7 +161,7 @@ public class PostRepository {
         var sql = String.format("""
                 SELECT *
                 FROM %s
-                WHERE memberId in (:memberIds)
+                WHERE member_id in (:memberIds)
                 ORDER BY id DESC
                 LIMIT :size
                 """, TABLE);
@@ -162,7 +178,7 @@ public class PostRepository {
         var sql = String.format("""
                 SELECT *
                 FROM %s
-                WHERE memberId = :memberId and id < :id
+                WHERE member_id = :memberId and id < :id
                 ORDER BY id DESC
                 LIMIT :size
                 """, TABLE);
@@ -183,7 +199,7 @@ public class PostRepository {
         var sql = String.format("""
                 SELECT *
                 FROM %s
-                WHERE memberId in (:memberIds) and id < :id
+                WHERE member_id in (:memberIds) and id < :id
                 ORDER BY id DESC
                 LIMIT :size
                 """, TABLE);
@@ -210,7 +226,7 @@ public class PostRepository {
 
     public void bulkInsert(List<Post> posts) {
         var sql = String.format("""
-                INSERT INTO `%s` (memberId, contents, createdDate, createdAt)
+                INSERT INTO `%s` (member_id, contents, created_date, created_at)
                 VALUES (:memberId, :contents, :createdDate, :createdAt)
                 """, TABLE);
 
